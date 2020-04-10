@@ -58,25 +58,36 @@ PORT     STATE SERVICE  VERSION
 
 |_        java.rmi.server.RemoteObject
 
-Because of our aggressive scan we know not only is it running Tomcat 7.0.103 (do note that the "PUT" HTTP method is absent) but there is a Java RMI (Remote Method Invocation) port on 8081. I won't lie here, I had no idea what this was however a common Tomcat exploit would not be useable here as it is not accepting the PUT method (that exploit is detailed here: http://breaktoprotect.blogspot.com/2017/09/the-case-of-cve-2017-12615-tomcat-7-put.html)
+Because of our aggressive scan we know not only is it running Tomcat 7.0.103 (do note that the "PUT" HTTP method is absent) but there is
+a Java RMI (Remote Method Invocation) port on 8081. I won't lie here, I had no idea what this was however a common Tomcat exploit would 
+not be useable here as it is not accepting the PUT method 
+(that exploit is detailed here: http://breaktoprotect.blogspot.com/2017/09/the-case-of-cve-2017-12615-tomcat-7-put.html)
 
-Just in case, I check the default credentials for the Tomcat manager login which is tomcat:tomcat at http://64.227.12.163:8080/manager/status which of course failed. 
+Just in case, I check the default credentials for the Tomcat manager login which is tomcat:tomcat at 
+http://64.227.12.163:8080/manager/status which of course failed. 
 
-Then doing what I usually do in CTFs, I googled for "Java RMI exploits" and low and behold I found the following blog post: https://www.optiv.com/blog/exploiting-jmx-rmi
+Then doing what I usually do in CTFs, I googled for "Java RMI exploits" and low and behold I found the following blog post: 
+https://www.optiv.com/blog/exploiting-jmx-rmi
 
-This helped show me not only what Java RMI is but showed me a metasploit module and told me that the default configuration would allow anyone to connect without authentication. This is the key!
+This helped show me not only what Java RMI is but showed me a metasploit module and told me that the default configuration would allow 
+anyone to connect without authentication. This is the key!
 
-While the metasploit module probably would've worked, I logged into it the Java RMI Application using jconsole on my Kali box. Once logged in without credentials (and making sure not to use SSL), I was able to take a look at the MBeans running on the system and view the Tomcat manager credentials!
+While the metasploit module probably would've worked, I logged into it the Java RMI Application using jconsole on my Kali box. 
+Once logged in without credentials (and making sure not to use SSL), I was able to take a look at the MBeans running on the system and 
+view the Tomcat manager credentials!
  
 (See https://github.com/BenTheCyberOne/CTF-Write-Ups/blob/master/SecDSM-2020-04-09.png for details)
 
 The credentials appeared as manager:1changed1t
 
-Now that we have the Tomcat credentials, we can do anything! I decided to use a Tomcat WAR deployer script found here: https://github.com/mgeeky/tomcatWarDeployer
+Now that we have the Tomcat credentials, we can do anything! I decided to use a Tomcat WAR deployer script found here: 
+https://github.com/mgeeky/tomcatWarDeployer
 
-Once the WAR was uploaded I had a root shell at http://64.227.12.163:8080/jsp_shell/. I was then able to find the flag.txt file in the root directory: “find /root” then “cat /root/flag.txt”
+Once the WAR was uploaded I had a root shell at http://64.227.12.163:8080/jsp_shell/. I was then able to find the flag.txt file in the 
+root directory: “find /root” then “cat /root/flag.txt”
 
-Not only did this teach me another weird thing Java can do, but that lazy, default configurations of software results in a very vulnerable network!
+Not only did this teach me another weird thing Java can do, but that lazy, default configurations of software results in a very 
+vulnerable network!
 
 
 
