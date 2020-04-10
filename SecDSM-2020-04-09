@@ -68,7 +68,7 @@ This helped show me not only what Java RMI is but showed me a metasploit module 
 
 While the metasploit module probably would've worked, I logged into it the Java RMI Application using jconsole on my Kali box. Once logged in without credentials (and making sure not to use SSL), I was able to take a look at the MBeans running on the system and view the Tomcat manager credentials!
  
-![jconsole](https://github.com/BenTheCyberOne/CTF-Write-Ups/blob/master/SecDSM-2020-04-09.png)
+(See image for details)
 
 The credentials appeared as manager:1changed1t
 
